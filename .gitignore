@@ -1,0 +1,13 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Legacy / working files
+prohaul_website_3.html
+websiteassets/
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
