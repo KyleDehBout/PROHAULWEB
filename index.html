@@ -333,9 +333,77 @@
   .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.65s ease, transform 0.65s ease; }
   .reveal.visible { opacity: 1; transform: translateY(0); }
 
+  /* ── HAMBURGER ── */
+  .nav-burger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 6px;
+    width: 44px; height: 44px;
+    cursor: pointer;
+    background: none; border: none; padding: 8px;
+    z-index: 110;
+  }
+  .nav-burger span {
+    display: block;
+    width: 26px; height: 2px;
+    background: var(--white);
+    border-radius: 2px;
+    transition: transform 0.3s ease, opacity 0.3s ease, width 0.3s ease;
+    transform-origin: center;
+  }
+  .nav-burger.open span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+  .nav-burger.open span:nth-child(2) { opacity: 0; width: 0; }
+  .nav-burger.open span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+  /* ── MOBILE MENU ── */
+  .nav-mobile {
+    display: none;
+    position: fixed;
+    top: 88px; left: 0; right: 0;
+    background: rgba(0,0,0,0.96);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 3px solid var(--red);
+    z-index: 99;
+    transform: translateY(-10px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+  }
+  .nav-mobile.open {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+  .nav-mobile ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+  }
+  .nav-mobile ul li a {
+    display: block;
+    padding: 20px 28px;
+    font-family: var(--font-head); font-size: 1.1rem; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: rgba(255,255,255,0.75);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    transition: color 0.2s, background 0.2s, padding-left 0.2s;
+  }
+  .nav-mobile ul li a:hover { color: var(--white); background: rgba(225,6,0,0.12); padding-left: 36px; }
+  .nav-mobile ul li:last-child a {
+    background: var(--red); color: var(--white);
+    text-align: center; border-bottom: none; margin: 20px 28px 28px;
+    padding: 16px 28px;
+  }
+  .nav-mobile ul li:last-child a:hover { background: var(--red-dark); padding-left: 28px; }
+
   @media (max-width: 900px) {
     nav { padding: 0 20px; }
     .nav-links { display: none; }
+    .nav-burger { display: flex; }
+    .nav-mobile { display: block; }
     .section-inner { padding: 0 20px; }
     .about-grid, .vm-grid, .services-layout, .contact-grid, .innov-grid { grid-template-columns: 1fr; gap: 28px; }
     .values-grid { grid-template-columns: 1fr; }
@@ -438,7 +506,23 @@
     <li><a href="#innovation">Innovation</a></li>
     <li><a href="#contact" class="nav-cta">Get a Quote</a></li>
   </ul>
+  <button class="nav-burger" id="navBurger" aria-label="Toggle menu" aria-expanded="false">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
 </nav>
+
+<!-- MOBILE MENU -->
+<div class="nav-mobile" id="navMobile">
+  <ul>
+    <li><a href="#about">About</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#values">Values</a></li>
+    <li><a href="#innovation">Innovation</a></li>
+    <li><a href="#contact">Get a Quote</a></li>
+  </ul>
+</div>
 
 <!-- HERO -->
 <section id="hero">
@@ -770,6 +854,34 @@
     btn.style.background = '#1a6e25';
     btn.disabled = true;
   }
+
+  // Mobile menu toggle
+  (function() {
+    const burger = document.getElementById('navBurger');
+    const menu   = document.getElementById('navMobile');
+    if (!burger || !menu) return;
+
+    function closeMenu() {
+      burger.classList.remove('open');
+      menu.classList.remove('open');
+      burger.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    }
+
+    burger.addEventListener('click', () => {
+      const isOpen = menu.classList.contains('open');
+      if (isOpen) {
+        closeMenu();
+      } else {
+        burger.classList.add('open');
+        menu.classList.add('open');
+        burger.setAttribute('aria-expanded', 'true');
+        document.body.style.overflow = 'hidden';
+      }
+    });
+
+    menu.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMenu));
+  })();
 </script>
 </body>
 </html>
